@@ -1,14 +1,12 @@
-
 use crate::web_api;
 
-pub struct IDOTA2TicketApi<'a> {
+pub struct IDOTA2MatchApi<'a> {
     web_api: &'a mut web_api::WebApi,
     app_id: web_api::AppId,
 }
 
-impl<'a> IDOTA2TicketApi<'a> {
+impl<'a> IDOTA2MatchApi<'a> {
     pub fn new(web_api: &'a mut web_api::WebApi, app_id: web_api::AppId) -> Self {
-        return Self{web_api, app_id}
+        return Self { web_api, app_id };
     }
 }
-

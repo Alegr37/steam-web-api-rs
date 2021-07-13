@@ -1,4 +1,3 @@
-
 use crate::web_api;
 
 pub struct ISteamWebUserPresenceOAuthApi<'a> {
@@ -7,7 +6,6 @@ pub struct ISteamWebUserPresenceOAuthApi<'a> {
 
 impl<'a> ISteamWebUserPresenceOAuthApi<'a> {
     pub fn new(web_api: &'a mut web_api::WebApi) -> Self {
-        return Self{web_api}
+        return Self { web_api };
     }
 }
-

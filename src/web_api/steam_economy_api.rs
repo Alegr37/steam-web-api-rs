@@ -1,13 +1,11 @@
-
 use crate::web_api;
 
-pub struct ISteamUserStatsApi<'a> {
+pub struct ISteamEconomyApi<'a> {
     web_api: &'a mut web_api::WebApi,
 }
 
-impl<'a> ISteamUserStatsApi<'a> {
+impl<'a> ISteamEconomyApi<'a> {
     pub fn new(web_api: &'a mut web_api::WebApi) -> Self {
-        return Self{web_api}
+        return Self { web_api };
     }
 }
-

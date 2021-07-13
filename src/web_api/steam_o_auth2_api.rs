@@ -1,13 +1,11 @@
-
 use crate::web_api;
 
-pub struct ISteamRemoteStorageApi<'a> {
+pub struct ISteamOAuth2Api<'a> {
     web_api: &'a mut web_api::WebApi,
 }
 
-impl<'a> ISteamRemoteStorageApi<'a> {
+impl<'a> ISteamOAuth2Api<'a> {
     pub fn new(web_api: &'a mut web_api::WebApi) -> Self {
-        return Self{web_api}
+        return Self { web_api };
     }
 }
-

@@ -1,19 +1,11 @@
-use tracing::{error};
+use anyhow::Result;
+use tracing::error;
 
-#[derive(Debug)]
-pub struct AuthError;
-
-#[derive(Debug)]
-struct WebApiKey(String);
-
-pub enum CredentialsConfig {
-    ApiKey(WebApiKey),
-    ApiKeyList(Vec<WebApiKey>),
-}
+pub use String as WebApiKey;
 
 pub trait ApiKeyProvider {
-    fn get_key(&self) -> Option<&WebApiKey>;
-    fn onAuthError(&mut self, key: &WebApiKey, err: &AuthError);
+    fn get_key(&self) -> Result<&WebApiKey>;
+    fn on_auth_error(&mut self, key: &WebApiKey);
 }
 
 struct SingleApiKey {
@@ -21,17 +13,16 @@ struct SingleApiKey {
 }
 
 impl ApiKeyProvider for SingleApiKey {
-    fn get_key(&self) -> Option<&WebApiKey> {
-        return Some(&self.key);
+    fn get_key(&self) -> Result<&WebApiKey> {
+        return Ok(&self.key);
     }
-    fn onAuthError(&mut self, key: &WebApiKey, error: &AuthError) {
-        error!("auth error occurred with {:?}: {:?}", key, error)
+    fn on_auth_error(&mut self, key: &WebApiKey) {
+        error!("auth error occurred with {}", key)
     }
 }
 
-pub fn new(config: CredentialsConfig) -> Box<dyn ApiKeyProvider> {
-    match config {
-        CredentialsConfig::ApiKey(key) => return Box::new(SingleApiKey{key}),
-        _ => unimplemented!(),
+impl From<WebApiKey> for Box<dyn ApiKeyProvider> {
+    fn from(key: WebApiKey) -> Self {
+        return Box::new(SingleApiKey { key: key.clone() });
     }
 }
