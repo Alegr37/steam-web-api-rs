@@ -5,6 +5,7 @@ use chrono::{DateTime, Utc};
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::*;
+use serde_repr::{Deserialize_repr, Serialize_repr};
 
 pub struct ISteamUserApi<'a> {
     web_api: &'a mut web_api::WebApi,
@@ -73,14 +74,44 @@ pub struct PlayerBanListResponse {
     players: Vec<PlayerBanList>,
 }
 
+#[derive(Serialize_repr, Deserialize_repr, PartialEq, Debug)]
+#[repr(u8)]
+enum CommunityVisibilityState {
+    Private = 1,
+    FriendsOnly = 2,
+    FriendsOfFriends = 3,
+    UsersOnly = 4,
+    Public = 5,
+}
+
+#[derive(Serialize_repr, Deserialize_repr, PartialEq, Debug)]
+#[repr(u8)]
+enum ProfileState {
+    Unconfigured = 0,
+    Configured = 1,
+}
+
+#[derive(Serialize_repr, Deserialize_repr, PartialEq, Debug)]
+#[repr(u8)]
+enum PersonaState {
+    // (Also set when the profile is Private)
+    Offline = 0,
+    Online = 1,
+    Busy = 2,
+    Away = 3,
+    Snooze = 4,
+    LookingToTrade = 5,
+    LookingToPlay = 6,
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PlayerSummaries {
     #[serde(deserialize_with = "deserialize_number_from_string")]
     steamid: web_api::SteamId,
     #[serde(rename = "communityvisibilitystate")]
-    community_visibility_state: usize,
+    community_visibility_state: CommunityVisibilityState,
     #[serde(rename = "profilestate")]
-    profile_state: usize,
+    profile_state: ProfileState,
     #[serde(rename = "personaname")]
     persona_name: String,
     #[serde(rename = "profileurl")]
@@ -96,7 +127,7 @@ pub struct PlayerSummaries {
     #[serde(rename = "lastlogoff", with = "ts_seconds")]
     last_logoff: DateTime<Utc>,
     #[serde(rename = "personastate")]
-    persona_state: usize,
+    persona_state: PersonaState,
     #[serde(rename = "commentpermission")]
     comment_permission: Option<usize>,
     #[serde(rename = "realname")]

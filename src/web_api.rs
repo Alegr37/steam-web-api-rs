@@ -68,10 +68,6 @@ pub struct WebApi {
     config: WebApiConfig,
 }
 
-pub struct ServerError {
-    Code: isize,
-}
-
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("connection timeout")]
@@ -97,7 +93,7 @@ impl WebApi {
     }
 
     fn build_url(&mut self, path: &str) -> Result<Url, Error> {
-        let url = match self.config.endpoint.join(path) {
+        let mut url = match self.config.endpoint.join(path) {
             Ok(url) => url,
             _ => return Err(Error::UrlError),
         };
@@ -105,10 +101,7 @@ impl WebApi {
             Ok(key) => key,
             _ => return Err(Error::CredentialsError),
         };
-        let url = match Url::parse_with_params(url.as_str(), &[("key", key)]) {
-            Ok(url) => url,
-            _ => return Err(Error::UrlError),
-        };
+        url.query_pairs_mut().extend_pairs(&[("key", key)]);
         Ok(url)
     }
 
