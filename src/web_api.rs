@@ -29,7 +29,7 @@ mod steam_web_api_util_api;
 mod steam_web_user_presence_o_auth_api;
 mod tf_promos_api;
 
-pub use dota2_automated_tourney_api::*;
+pub use crate::web_api::dota2_automated_tourney_api::*;
 pub use dota2_fantasy_api::*;
 pub use dota2_match_api::*;
 pub use dota2_match_stats_api::*;

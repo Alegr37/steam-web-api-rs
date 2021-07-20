@@ -3,29 +3,29 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 pub struct ISteamWebAPIUtilApi<'a> {
-    web_api: &'a mut web_api::WebApi,
+    pub web_api: &'a mut web_api::WebApi,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct SupportedApiListMethodParameter {
-    name: String,
-    r#type: String,
-    optional: bool,
-    description: Option<String>,
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd, Eq, Ord)]
+pub struct Parameter {
+    pub name: String,
+    pub r#type: String,
+    pub optional: bool,
+    pub description: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct SupportedApiListMethod {
-    name: String,
-    version: usize,
-    httpmethod: String,
-    parameters: Vec<SupportedApiListMethodParameter>,
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd, Eq, Ord)]
+pub struct Method {
+    pub name: String,
+    pub version: usize,
+    pub httpmethod: String,
+    pub parameters: Vec<Parameter>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ApiInterface {
-    name: String,
-    methods: Vec<SupportedApiListMethod>,
+    pub name: String,
+    pub methods: Vec<Method>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
