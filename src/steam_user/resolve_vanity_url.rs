@@ -1,14 +1,34 @@
-use anyhow::Result;
+use crate::common::*;
+use anyhow::{bail, Result};
+use serde::{Deserialize, Serialize};
 use std::str;
 
-// TODO: add real Response struct
-pub struct Response {}
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ResolvedUrl {
+    steamid: Option<String>,
+    message: Option<String>,
+    success: usize,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ResolvedUrlResponse {
+    response: ResolvedUrl,
+}
+
+pub struct Response {
+    pub steamid: SteamId,
+}
 
 impl Response {
     pub fn from(data: &[u8]) -> Result<Self> {
-        if let Ok(s) = str::from_utf8(data) {
-            unimplemented!("{}", s);
+        let j: ResolvedUrlResponse = serde_json::from_slice(&data)?;
+        if let Some(id) = j.response.steamid {
+            let id = id.parse::<SteamId>()?;
+            return Ok(Response { steamid: id });
         }
-        unimplemented!("{:?}", data)
+        if let Some(m) = j.response.message {
+            bail!("error_code: {}, message: {:?}", j.response.success, m)
+        }
+        bail!("error_code: {}", j.response.success)
     }
 }

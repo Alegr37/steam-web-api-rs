@@ -3,31 +3,20 @@ use anyhow::Result;
 use itertools::Itertools;
 pub mod get_realtime_stats;
 
-pub struct MatchStatsDota2<'a> {
-    api: &'a mut crate::WebApi,
-}
-
-impl<'a> MatchStatsDota2<'a> {
-    pub fn new(api: &'a mut crate::WebApi) -> Self {
-        return Self { api };
-    }
-
-    pub async fn get_realtime_stats(
-        &'a mut self,
-        server_steam_id: u64,
-    ) -> Result<get_realtime_stats::Response> {
-        let query = format!(
-            "?key={}&server_steam_id={}",
-            self.api.get_key()?,
-            server_steam_id
-        );
-        let data = self
-            .api
-            .request(&format!(
-                "IDOTA2MatchStats_570/GetRealtimeStats/v1/{}",
-                &query
-            ))
-            .await?;
-        return get_realtime_stats::Response::from(&data);
-    }
+pub async fn get_realtime_stats(
+    api: &mut crate::WebApi,
+    server_steam_id: u64,
+) -> Result<get_realtime_stats::Response> {
+    let query = format!(
+        "?key={}&server_steam_id={}",
+        api.get_key()?,
+        server_steam_id
+    );
+    let data = api
+        .request(&format!(
+            "IDOTA2MatchStats_570/GetRealtimeStats/v1/{}",
+            &query
+        ))
+        .await?;
+    return get_realtime_stats::Response::from(&data);
 }
